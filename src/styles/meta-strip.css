@@ -1,0 +1,52 @@
+/* ================================
+   Meta Strip – Shared Across Steps
+   ================================ */
+
+.meta-strip{
+  margin-top: 18px;        /* space from header */
+  margin-bottom: 14px;     /* space before white box */
+}
+
+.meta-stripBox{
+  border: 1px solid var(--border, #eaeaea);
+  background: #f0f0f0;
+}
+
+.meta-stripRow{
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  padding: 14px 18px;
+  flex-wrap: wrap;
+}
+
+.meta-item{
+  display: flex;
+  gap: 6px;
+  font-size: 12px;
+  align-items: baseline;
+}
+
+.meta-key{
+  font-weight: 900;
+  letter-spacing: .06em;
+  opacity: .65;
+}
+
+.meta-val{
+  font-weight: 700;
+  opacity: .9;
+}
+
+/* Mobile tightening */
+@media (max-width: 640px){
+  .meta-strip{
+    margin-top: 14px;
+    margin-bottom: 12px;
+  }
+
+  .meta-stripRow{
+    gap: 18px;
+    padding: 12px 14px;
+  }
+}
