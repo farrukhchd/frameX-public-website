@@ -3,6 +3,9 @@
   --black:#0B0A09;
   --border:#eaeaea;
   --bg:#f5f5f5;
+
+  /* ✅ Mat defaults (can be overridden from PreviewStage via inline CSS vars) */
+  --mat-color: #fbfbfb;
 }
 
 /* Page */
@@ -48,54 +51,141 @@ Left - Preview Card
   justify-content:center;
 }
 
-/* 9-slice frame wrapper
-   - uses CSS variables set inline from JSX:
-     --frame-url, --slice, --border, --ar, --pad
-*/
+/* =========================================================
+   ✅ FRAME PREVIEW (single source of truth)
+   Matches PreviewStage.jsx:
+   .fp3-frame9Modern -> container
+   .fp3-frame9Opening -> clipped opening (padding applied here)
+   .fp3-mountModern.hasMat -> mat background only when selected
+   frame border drawn ONCE via ::after (always on top)
+========================================================= */
+
+/* Frame container */
 .fp3-frame9Modern{
+  position: relative;
+
   height: 88%;
   max-height: 88%;
   max-width: 96%;
   width: auto;
+
   aspect-ratio: var(--ar);
   box-sizing: border-box;
+}
 
-  /* 9-slice overlay */
-  border: 22px solid transparent;
-  border-image-source: var(--frame-url);
-  border-image-slice: var(--slice) fill;
-  border-image-width: var(--border);
-  border-image-repeat: stretch;
+/* Opening inside the frame (everything clipped here) */
+.fp3-frame9Opening{
+  position: absolute;
+  inset: 0;
 
-  display:grid;
-  place-items: stretch;
+  padding: var(--pad);
+  box-sizing: border-box;
 
-  filter: drop-shadow(0 18px 22px rgba(0,0,0,.12));
+  overflow: hidden;          /* ✅ prevents mat/photo spilling out */
+  z-index: 1;                /* ✅ behind border overlay */
+  background: transparent;
+}
+
+/* ✅ Glass reflection (above photo/mat, below frame border) */
+.fp3-frame9Opening::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index: 3;
+
+  background:
+    linear-gradient(135deg,
+      rgba(255,255,255,0.00) 0%,
+      rgba(255,255,255,0.00) 30%,
+      rgba(255,255,255,0.20) 48%,
+      rgba(255,255,255,0.06) 60%,
+      rgba(255,255,255,0.00) 76%,
+      rgba(255,255,255,0.00) 100%);
+  mix-blend-mode: screen;
+  opacity: .55;
 }
 
 /* Mat area */
 .fp3-mountModern{
-  padding: var(--pad);
-  background: #fff;
-  display:grid;
-  place-items:center;
-  box-sizing:border-box;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+
+  display: block;
+  background: transparent;   /* ✅ no mat = no white area */
+  position: relative;
 }
 
-.fp3-mountModern.hasMat{
-  background: #fbfbfb;
+/* Opening inside the frame (everything clipped here) */
+.fp3-frame9Opening{
+  position: absolute;
+  inset: 0;
+  padding: var(--pad);
+  box-sizing: border-box;
+  overflow: hidden;
+  z-index: 1;
+  background: transparent;
 }
+
+/* ✅ Mat color belongs to OPENING because padding lives here */
+.fp3-frame9Opening.hasMat{
+  background: var(--mat-color, #fbfbfb);
+}
+
+/* ✅ Inner bevel shadow on the mat area (opening) */
+.fp3-frame9Opening.hasMat::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:2;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.65),
+    inset 0 -12px 24px rgba(0,0,0,.10),
+    inset 12px 0 20px rgba(0,0,0,.06),
+    inset -12px 0 20px rgba(0,0,0,.06);
+  border: 1px solid rgba(0,0,0,.06);
+}
+
+/* Keep mount transparent (mat is now on opening) */
+.fp3-mountModern{
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  display: block;
+  background: transparent;
+  position: relative;
+  z-index: 1; /* photo stays below bevel overlay */
+}
+
 
 /* Photo: must never crop */
 .fp3-photoModern{
-  width: auto !important;
-  height: auto !important;
-  max-width: 100% !important;
-  max-height: 100% !important;
+  width: 100% !important;
+  height: 100% !important;
+
+  display: block;
   object-fit: contain !important;
   object-position: center center !important;
-  display:block;
-  background:#fff;
+
+  background: transparent;   /* ✅ no white area */
+}
+
+/* Draw frame border ONCE, ALWAYS on top */
+.fp3-frame9Modern::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+
+  background-image: var(--frame-url);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+
+  filter: drop-shadow(0 18px 22px rgba(0,0,0,.12));
 }
 
 /* 3D wrapper */
@@ -365,59 +455,7 @@ Right - Panels
   padding: 2px 6px;
 }
 
-/* ---------------------------
-Frame Picker Modal
---------------------------- */
-.fp3-modalOverlay{
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.35);
-  z-index: 200;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding: 16px;
-}
-
-.fp3-modalCard{
-  width: min(880px, 100%);
-  max-height: min(80vh, 720px);
-  background:#fff;
-  border: 1px solid rgba(0,0,0,.18);
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-}
-
-.fp3-modalHeader{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--border);
-}
-
-.fp3-modalTitle{
-  font-weight: 950;
-  font-size: 16px;
-}
-
-.fp3-modalClose{
-  width: 40px;
-  height: 40px;
-  border: 1px solid rgba(0,0,0,.18);
-  background:#fff;
-  cursor:pointer;
-  font-weight: 950;
-}
-
-.fp3-modalClose:hover{ background:#fafafa; }
-
-.fp3-modalBody{
-  padding: 14px;
-  overflow:auto;
-}
-
+/* Generic loading */
 .fp3-loading{
   text-align:center;
   padding: 30px 0;
@@ -425,74 +463,29 @@ Frame Picker Modal
   opacity: .7;
 }
 
-.fp3-frameList{
-  display:grid;
-  gap: 10px;
-}
-
-.fp3-frameRow{
-  width: 100%;
-  border: 1px solid rgba(0,0,0,.12);
-  background: #f2f2f2;
-  cursor:pointer;
-  padding: 10px;
+/* FrameInfoCard: thumb in header */
+.fp3-infoTopRow{
   display:flex;
-  gap: 12px;
-  align-items:center;
-  text-align:left;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:6px;
 }
 
-.fp3-frameRow:hover{ background:#efefef; }
-
-.fp3-frameRow.is-active{
-  box-shadow: 0 0 0 2px rgba(244,212,113,.75) inset;
-}
-
-.fp3-frameThumb{
-  width: 86px;
-  height: 86px;
+.fp3-selectedFrameThumb{
+  width:56px;
+  height:56px;
+  border:1px solid rgba(0,0,0,.12);
   background:#fff;
-  border: 1px solid rgba(0,0,0,.10);
-  display:flex;
-  align-items:center;
-  justify-content:center;
   overflow:hidden;
+  flex:0 0 auto;
 }
 
-.fp3-frameThumb img{
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.fp3-selectedFrameThumb img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
   display:block;
-}
-
-.fp3-thumbPh{
-  width: 40px;
-  height: 40px;
-  border: 2px solid rgba(0,0,0,.18);
-  opacity:.5;
-}
-
-.fp3-frameInfo{
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.fp3-frameName{
-  font-weight: 950;
-  font-size: 15px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.fp3-frameMeta{
-  margin-top: 6px;
-  font-size: 12px;
-  color: rgba(11,10,9,.6);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 /* ---------------------------
@@ -528,4 +521,138 @@ Responsive
     width: 78px;
     height: 62px;
   }
+
+  .fp3-frameGridMini{
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
+
+/* ---- FrameGridPicker (in preview) ---- */
+.fgp-wrap{
+  margin-top: 14px;
+  border-top: 1px solid rgba(0,0,0,.08);
+  padding-top: 14px;
+}
+
+.fgp-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  margin-bottom:10px;
+}
+
+.fgp-title{
+  font-weight: 900;
+  font-size: 14px;
+  color: #0b0a09;
+}
+
+.fgp-sub{
+  margin-top: 4px;
+  font-size: 12px;
+  color: rgba(11,10,9,.65);
+  line-height: 1.4;
+}
+
+.fgp-controls{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin: 10px 0 12px;
+}
+
+.fgp-search{
+  flex: 1;
+  border: 1px solid rgba(0,0,0,.14);
+  border-radius: 10px;
+  padding: 10px 12px;
+  outline: none;
+  font-size: 13px;
+  background: #fff;
+}
+
+.fgp-select{
+  width: 140px;
+  border: 1px solid rgba(0,0,0,.14);
+  border-radius: 10px;
+  padding: 10px 12px;
+  outline: none;
+  font-size: 13px;
+  background: #fff;
+}
+
+.fgp-loading, .fgp-empty{
+  padding: 10px 0;
+  color: rgba(11,10,9,.7);
+  font-size: 13px;
+}
+
+.fgp-grid{
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+@media (max-width: 980px){
+  .fgp-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.fgp-card{
+  border: 1px solid rgba(0,0,0,.10);
+  background: #fff;
+  border-radius: 14px;
+  padding: 10px;
+  cursor:pointer;
+  text-align:left;
+}
+
+.fgp-card:hover{
+  border-color: rgba(0,0,0,.22);
+}
+
+.fgp-card.is-active{
+  border-color: #0b0a09;
+  box-shadow: 0 0 0 2px rgba(11,10,9,.08);
+}
+
+.fgp-thumb{
+  width: 100%;
+  aspect-ratio: 1/1;
+  border-radius: 12px;
+  overflow:hidden;
+  background: #f6f6f6;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.fgp-thumb img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display:block;
+}
+
+.fgp-meta{
+  margin-top: 8px;
+}
+
+.fgp-name{
+  font-size: 12.5px;
+  font-weight: 900;
+  color: #0b0a09;
+  line-height: 1.2;
+}
+
+.fgp-mini{
+  margin-top: 4px;
+  font-size: 11.5px;
+  color: rgba(11,10,9,.65);
+  display:flex;
+  gap:6px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.fgp-dot{ opacity: .6; }
