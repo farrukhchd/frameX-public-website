@@ -1,33 +1,42 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { fetchMouldings } from "../services/apiService";
 
+function resolveMediaUrl(url) {
+  if (!url) return null;
+  const u = String(url).trim();
+  if (/^https?:\/\//i.test(u) || u.startsWith("data:") || u.startsWith("blob:")) return u;
+  if (u.startsWith("//")) return `${window.location.protocol}${u}`;
+  if (u.startsWith("/")) return u;
+  return `/${u.replace(/^\/+/, "")}`;
+}
+
+// Map your API color names to UI labels + a display swatch color
+const COLOR_OPTIONS = [
+  { key: "All", label: "All", swatch: null },
+  { key: "Black", label: "Black", swatch: "#111111" },
+  { key: "White", label: "White", swatch: "#f6f6f6" },
+  { key: "Brown", label: "Brown", swatch: "#7a4a2a" },
+  { key: "Golden", label: "Gold", swatch: "#c9a227" },
+  { key: "Silver", label: "Silver", swatch: "#b9bcc3" },
+];
+
 export default function FrameGridPicker({
   selectedFrame,
   onSelect,
-  title = "Change Frame",
-  subtitle = "Pick a frame to update the preview.",
+  title = "Frames",
+  subtitle = "Choose a frame color, then pick a style.",
 }) {
   const [frames, setFrames] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // lightweight filters (optional but very useful in-preview)
-  const [query, setQuery] = useState("");
-  const [selectedColor, setSelectedColor] = useState("All"); // All | White | Black | etc.
-
-  const colorFilters = useMemo(
-    () => ["All", "White", "Black", "Golden", "Brown", "Silver"],
-    []
-  );
+  const [selectedColor, setSelectedColor] = useState("All");
 
   useEffect(() => {
     let mounted = true;
     setLoading(true);
 
     fetchMouldings()
-      .then((data) => {
-        if (!mounted) return;
-        setFrames(Array.isArray(data) ? data : []);
-      })
+      .then((data) => mounted && setFrames(Array.isArray(data) ? data : []))
       .catch(() => mounted && setFrames([]))
       .finally(() => mounted && setLoading(false));
 
@@ -37,96 +46,113 @@ export default function FrameGridPicker({
   }, []);
 
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
     const color = (selectedColor || "All").toLowerCase();
 
     return frames.filter((f) => {
-      const matchesColor =
-        color === "all" ? true : (f.color || "").toLowerCase() === color;
-
-      const matchesQuery = q
-        ? `${f.name || ""} ${f.tagline || ""} ${f.material || ""}`
-            .toLowerCase()
-            .includes(q)
-        : true;
-
-      return matchesColor && matchesQuery;
+      if (color === "all") return true;
+      return (f.color || "").toLowerCase() === color;
     });
-  }, [frames, query, selectedColor]);
+  }, [frames, selectedColor]);
 
   return (
-    <div className="fgp-wrap">
-      <div className="fgp-head">
-        <div>
-          <div className="fgp-title">{title}</div>
-          <div className="fgp-sub">{subtitle}</div>
-        </div>
+    <section className="fx-card fx-section">
+      <header className="fx-sectionHead">
+        <div className="fx-sectionTitle">{title}</div>
+        <div className="fx-sectionSub">{subtitle}</div>
+      </header>
+
+      {/* ✅ Color row (no search) */}
+      <div className="fx-colorRow" role="tablist" aria-label="Frame colors">
+        {COLOR_OPTIONS.map((c) => {
+          const active = selectedColor === c.key;
+
+          // "All" is a special pill button
+          if (c.key === "All") {
+            return (
+              <button
+                key={c.key}
+                type="button"
+                className={`fx-colorAll ${active ? "is-active" : ""}`}
+                onClick={() => setSelectedColor(c.key)}
+                role="tab"
+                aria-selected={active}
+              >
+                All
+              </button>
+            );
+          }
+
+          return (
+            <button
+              key={c.key}
+              type="button"
+              className={`fx-colorDot ${active ? "is-active" : ""}`}
+              onClick={() => setSelectedColor(c.key)}
+              role="tab"
+              aria-selected={active}
+              title={c.label}
+            >
+              <span
+                className="fx-colorDotFill"
+                style={{
+                  background: c.swatch,
+                  borderColor: c.key === "White" ? "rgba(0,0,0,.18)" : "transparent",
+                }}
+              />
+            </button>
+          );
+        })}
       </div>
 
-      <div className="fgp-controls">
-        <input
-          className="fgp-search"
-          placeholder="Search frames…"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-
-        <select
-          className="fgp-select"
-          value={selectedColor}
-          onChange={(e) => setSelectedColor(e.target.value)}
-        >
-          {colorFilters.map((c) => (
-            <option key={c} value={c}>
-              {c}
-            </option>
-          ))}
-        </select>
-      </div>
-
+      {/* Frames */}
       {loading ? (
-        <div className="fgp-loading">Loading frames…</div>
+        <div className="fx-skeletonGrid">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="fx-skelCard" />
+          ))}
+        </div>
       ) : (
-        <div className="fgp-grid">
+        <div className="fx-frameGrid">
           {filtered.map((frame) => {
             const active = selectedFrame?.id === frame.id;
+            const imgSrc =
+              resolveMediaUrl(frame.cornerImage) ||
+              "https://placehold.co/100x100?text=Frame";
 
             return (
               <button
-                key={frame.id}
+                key={frame.id || frame.code}
                 type="button"
-                className={`fgp-card ${active ? "is-active" : ""}`}
+                className={`fx-frameCard ${active ? "is-active" : ""}`}
                 onClick={() => onSelect?.(frame)}
-                title={frame.name || "Frame"}
+                title={frame.name || frame.code || "Frame"}
               >
-                <div className="fgp-thumb">
+                <div className="fx-frameMedia">
                   <img
-                    src={frame.cornerImage || "https://placehold.co/200x200?text=Frame"}
-                    alt={frame.name || "Frame"}
+                    src={imgSrc}
+                    alt={frame.code || frame.name || "Frame"}
                     loading="lazy"
                     onError={(e) => {
-                      e.currentTarget.src = "https://placehold.co/200x200?text=Frame";
+                      e.currentTarget.src = "https://placehold.co/100x100?text=Frame";
                     }}
                   />
                 </div>
 
-                <div className="fgp-meta">
-                  <div className="fgp-name">{frame.name || "—"}</div>
-                  <div className="fgp-mini">
-                    <span>{frame.color || "-"}</span>
-                    <span className="fgp-dot">•</span>
-                    <span>{frame.material || "-"}</span>
-                  </div>
+                <div className="fx-frameCodeOnly">
+                  {frame.code || frame.name || "—"}
                 </div>
               </button>
             );
           })}
 
-          {!loading && filtered.length === 0 ? (
-            <div className="fgp-empty">No frames found.</div>
+          {filtered.length === 0 ? (
+            <div className="fx-empty">
+              <div className="fx-emptyTitle">No frames in this color</div>
+              <div className="fx-emptySub">Try another color.</div>
+            </div>
           ) : null}
         </div>
       )}
-    </div>
+    </section>
   );
 }

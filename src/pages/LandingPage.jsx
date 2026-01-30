@@ -150,124 +150,6 @@ function PricingStrip() {
     );
 }
 
-function ConfiguratorBlock() {
-    const fade = useFadeUp();
-
-    const [frame, setFrame] = useState("Black");
-    const [mat, setMat] = useState("No mat");
-    const [size, setSize] = useState("8×10");
-
-    const frameSwatches = ["Black", "White", "Oak", "Walnut"];
-    const matOptions = ["No mat", "Single mat", "Double mat"];
-    const sizes = ["5×7", "8×10", "11×14", "16×20", "18×24"];
-
-    return (
-        <section className="fx-section fx-config" id="configurator">
-            <div className="fx-container">
-                <div className="fx-between">
-                    <div>
-                        <h2 className="fx-h2">Preview your frame.</h2>
-                        <p className="fx-sub">UI preview block — connect to real product data later.</p>
-                    </div>
-                    <button className="fx-btnGhost">How sizing works</button>
-                </div>
-
-                <div className="fx-divider" />
-
-                <div className="fx-configGrid">
-                    <motion.div {...fade} className="fx-configPanel">
-                        <div className="fx-field">
-                            <div className="fx-fieldLabel">Frame</div>
-                            <div className="fx-swatchRow">
-                                {frameSwatches.map((s) => (
-                                    <button
-                                        key={s}
-                                        className={`fx-swatch ${frame === s ? "is-active" : ""}`}
-                                        onClick={() => setFrame(s)}
-                                        type="button"
-                                    >
-                                        <span className={`fx-swatchDot fx-dot-${s.toLowerCase()}`} />
-                                        <span className="fx-swatchText">{s}</span>
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className="fx-field">
-                            <div className="fx-fieldLabel">Mat</div>
-                            <div className="fx-pillRow">
-                                {matOptions.map((m) => (
-                                    <button
-                                        key={m}
-                                        className={`fx-pill ${mat === m ? "is-active" : ""}`}
-                                        onClick={() => setMat(m)}
-                                        type="button"
-                                    >
-                                        {m}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className="fx-field">
-                            <div className="fx-fieldLabel">Size</div>
-                            <div className="fx-pillRow">
-                                {sizes.map((s) => (
-                                    <button
-                                        key={s}
-                                        className={`fx-pill ${size === s ? "is-active" : ""}`}
-                                        onClick={() => setSize(s)}
-                                        type="button"
-                                    >
-                                        {s}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className="fx-configCtas">
-                            <button className="fx-btnPrimary">Add to cart</button>
-                            <button className="fx-btnGhost">Save design</button>
-                        </div>
-
-                        <div className="fx-smallNote">Replace this mock UI later with your real configurator flow.</div>
-                    </motion.div>
-
-                    <motion.div {...fade} className="fx-preview">
-                        <div className="fx-previewTop">
-                            <div className="fx-previewTitle">Live preview</div>
-                            <div className="fx-previewMeta">
-                                <span>Frame: {frame}</span>
-                                <span className="fx-dotSep" />
-                                <span>Mat: {mat}</span>
-                                <span className="fx-dotSep" />
-                                <span>Size: {size}</span>
-                            </div>
-                        </div>
-
-                        <div className={`fx-previewStage fx-frame-${frame.toLowerCase()}`}>
-                            <div className={`fx-mat fx-mat-${mat.replaceAll(" ", "-").toLowerCase()}`}>
-                                <div className="fx-art">
-                                    <div className="fx-artText">Replace with customer image</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="fx-previewFooter">
-                            <div className="fx-previewHint">Later: real rendering (canvas / compositing).</div>
-                            <img
-                                className="fx-previewImg"
-                                src="https://placehold.co/1600x1000?text=Replace+Preview+Image"
-                                alt="Preview placeholder"
-                            />
-                        </div>
-                    </motion.div>
-                </div>
-            </div>
-        </section>
-    );
-}
-
 export default function LandingPage({ onStartFraming }) {
     const fade = useFadeUp();
 
@@ -378,8 +260,6 @@ export default function LandingPage({ onStartFraming }) {
             {/* PRICING */}
             <PricingStrip />
 
-            {/* CONFIGURATOR */}
-            <ConfiguratorBlock />
 
             {/* CTA */}
             <section className="fx-ctaSection">

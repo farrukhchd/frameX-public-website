@@ -19,43 +19,29 @@ export default function FrameInfoCard({
 }) {
   const imgSrc =
     resolveMediaUrl(selectedFrame?.cornerImage) ||
-    "https://placehold.co/140x140?text=Frame";
+    "https://placehold.co/160x160?text=Frame";
 
   return (
-    <div className="fp3-topCard">
-      <div className="fp3-kickerModern">
+    <section className="fx-topIntro">
+      <div className="fx-kicker">
         {String(service || "PHOTO FRAME").replaceAll("-", " ").toUpperCase()}
       </div>
 
-      <div className="fp3-infoTopRow">
-        <div style={{ minWidth: 0 }}>
-          <div className="fp3-titleModern">
-            {selectedFrame?.name || "Selected Frame"}
-          </div>
+      <div className="fx-titleRow">
+        <div className="fx-titleBlock">
+          <h1 className="fx-title">{selectedFrame?.name || "Selected Frame"}</h1>
           {selectedFrame?.tagline ? (
-            <div className="fp3-sublineModern" style={{ marginTop: 4, opacity: 0.75 }}>
-              {selectedFrame.tagline}
-            </div>
+            <div className="fx-subtitle">{selectedFrame.tagline}</div>
           ) : null}
+
+          <div className="fx-specLine">
+            Print size: <strong>{baseArtSizeText}</strong>
+            <span className="fx-dot">•</span>
+            Final frame size: <strong>{formatSizeText(finalFrameSize)}</strong>
+          </div>
         </div>
 
-        <div className="fp3-selectedFrameThumb" title={selectedFrame?.name || ""}>
-          <img
-            src={imgSrc}
-            alt=""
-            loading="lazy"
-            onError={(e) => {
-              e.currentTarget.src = "https://placehold.co/140x140?text=Frame";
-            }}
-          />
-        </div>
       </div>
-
-      <div className="fp3-sublineModern">
-        Print size: <strong>{baseArtSizeText}</strong>
-        <span className="fp3-dot">•</span>
-        Final frame size: <strong>{formatSizeText(finalFrameSize)}</strong>
-      </div>
-    </div>
+    </section>
   );
 }

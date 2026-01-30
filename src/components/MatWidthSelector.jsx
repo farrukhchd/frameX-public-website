@@ -10,9 +10,13 @@ export default function MatWidthSelector({
   matInches,
 }) {
   return (
-    <div className="fp3-card">
-      <div className="fp3-secTitleModern">Mat (Mount Width)</div>
-      <div className="fp3-chipRowModern">
+    <section className="fx-card fx-section">
+      <header className="fx-sectionHead">
+        <div className="fx-sectionTitle">Mat (Mount Width)</div>
+        <div className="fx-sectionSub">Add a clean border for a gallery look.</div>
+      </header>
+
+      <div className="fx-chipRow">
         {matWidthVariants.map((v) => {
           const t = v.thickness ?? '0"';
           const inches = parseThicknessToInches(t);
@@ -24,7 +28,7 @@ export default function MatWidthSelector({
             <button
               key={safeId(v) || t}
               type="button"
-              className={`fp3-chipModern ${isSelected ? "is-active" : ""}`}
+              className={`fx-chip ${isSelected ? "is-active" : ""}`}
               onClick={() => {
                 if (isZero) {
                   setSelectedMatWidth(null);
@@ -39,6 +43,6 @@ export default function MatWidthSelector({
           );
         })}
       </div>
-    </div>
+    </section>
   );
 }

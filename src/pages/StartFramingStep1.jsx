@@ -4,6 +4,9 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import SiteHeader from "../components/SiteHeader";
 import "../styles/start-framing.css";
+import photoFrameIcon from "../assets/icons/photoframe.png";
+import emptyFrameIcon from "../assets/icons/emptyframe.png";
+import photoPrintsIcon from "../assets/icons/photoprints.png";
 
 export default function StartFramingStep1() {
   const navigate = useNavigate();
@@ -20,7 +23,7 @@ export default function StartFramingStep1() {
         desc: "Upload your photo, and we’ll print and frame it for you",
         bg: "sf-slide-yellow",
         icon: "🖼️",
-        thumb: "https://placehold.co/320x320?text=Photo+Frame",
+        thumb: photoFrameIcon,
       },
       {
         key: "empty-frame",
@@ -28,7 +31,7 @@ export default function StartFramingStep1() {
         desc: "Have your own art? Get a frame you can easily open, insert, and hang.",
         bg: "sf-slide-mint",
         icon: "🪟",
-        thumb: "https://placehold.co/320x320?text=Empty+Frame",
+        thumb: emptyFrameIcon,
       },
       {
         key: "only-prints",
@@ -36,7 +39,7 @@ export default function StartFramingStep1() {
         desc: "Need only a print? Upload your photo or artwork — we’ll print it on premium paper.",
         bg: "sf-slide-lilac",
         icon: "🖨️",
-        thumb: "https://placehold.co/320x320?text=Only+Prints",
+        thumb: photoPrintsIcon,
       },
     ],
     []
@@ -79,20 +82,20 @@ export default function StartFramingStep1() {
         key: "photo-frame",
         title: "Photo Frame",
         desc: "Upload your photo, and we’ll print and frame it for you",
-        icon: "https://placehold.co/96x96?text=PF",
+        icon: photoFrameIcon,
         badge: "Popular",
       },
       {
         key: "empty-frame",
         title: "Empty Frame",
         desc: "Have your own art? Get a frame you can easily open, insert, and hang.",
-        icon: "https://placehold.co/96x96?text=EF",
+        icon: emptyFrameIcon,
       },
       {
         key: "only-prints",
         title: "Only Prints",
         desc: "Need only a print? Upload your photo or artwork — we’ll print it on premium paper.",
-        icon: "https://placehold.co/96x96?text=OP",
+        icon: photoPrintsIcon,
       },
     ],
     []

@@ -4,7 +4,7 @@
 
  import "../styles/frame-preview.css";
  import "../styles/meta-strip.css";
-
+import "../styles/frame-preview-modern.css";
  // hooks
  import { usePreviewImages } from "../hooks/usePreviewImages";
  import { useMaterialsPricing } from "../hooks/useMaterialsPricing";

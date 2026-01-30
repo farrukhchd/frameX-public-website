@@ -3,23 +3,23 @@ import { moneyPKR } from "../utils/pricingUtils";
 
 export default function PriceCard({ total, uploading, uploadProgress, onAddToCart }) {
   return (
-    <div className="fp3-card fp3-priceCard">
-      <div className="fp3-priceRowModern">
-        <div className="fp3-totalLbl">Total</div>
-        <div className="fp3-priceValModern">{total == null ? "—" : moneyPKR(total)}</div>
-      </div>
+    <div className="fx-stickyFooter">
+      <div className="fx-footerInner">
+        <div className="fx-priceBlock">
+          <div className="fx-priceLabel">Total</div>
+          <div className="fx-priceValue">{total == null ? "—" : moneyPKR(total)}</div>
+        </div>
 
-      <button
-        className="fp3-ctaModern"
-        type="button"
-        disabled={uploading}
-        onClick={onAddToCart}
-        title={uploading ? `Uploading… ${uploadProgress}%` : "Add to cart"}
-      >
-        {uploading
-          ? `UPLOADING… ${uploadProgress}%`
-          : `ADD TO CART — ${total == null ? "Continue" : moneyPKR(total)}`}
-      </button>
+        <button
+          className="fx-cta"
+          type="button"
+          disabled={uploading}
+          onClick={onAddToCart}
+          title={uploading ? `Uploading… ${uploadProgress}%` : "Add to cart"}
+        >
+          {uploading ? `Uploading… ${uploadProgress}%` : "Add to cart"}
+        </button>
+      </div>
     </div>
   );
 }
