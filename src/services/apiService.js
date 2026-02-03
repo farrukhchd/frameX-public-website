@@ -3,8 +3,8 @@ import { parseMoulding } from "../models/moulding";
 import { parseMaterial } from "../models/material";
 import { parseCostFactor } from "../models/costFactor";
 
-// const API_BASE = "https://admin.framex.pk/api";
-const API_BASE = "http://localhost:5001/api";
+ const API_BASE = "https://admin.framex.pk/api";
+//const API_BASE = "http://localhost:5001/api";
 
 /* ---------------- Print Sizes ---------------- */
 export async function fetchPrintSizes() {
