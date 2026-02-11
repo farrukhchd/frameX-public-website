@@ -399,7 +399,7 @@ export default function CropImages() {
                 onRotationChange={setRotation}
                 onCropComplete={onCropComplete}
                 objectFit="contain"
-                restrictPosition={false}
+                restrictPosition={true}
                 onMediaLoaded={(m) =>
                   setMediaSize({
                     width: m.naturalWidth || m.width || 0,
