@@ -203,3 +203,27 @@
 .qt-quickCentered{
   justify-content: center;
 }
+
+/* Mobile: remove yellow sticky bg + make Next fill whole sticky bar */
+@media (max-width: 640px){
+  .qt-sticky{
+    background: transparent;
+    border-top: none;          /* optional */
+  }
+
+  /* remove container padding so button can truly cover the full width */
+  .qt-stickyInner{
+    padding: 0;                /* overrides .qt-container padding */
+    margin: 0;
+    gap: 0;
+    justify-content: stretch;
+  }
+
+  .qt-next{
+    width: 100%;
+    height: 100%;
+    padding: 16px;
+    border-radius: 0;          /* optional */
+    display: block;
+  }
+}

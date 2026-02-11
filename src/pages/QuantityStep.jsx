@@ -133,7 +133,7 @@ onClick={() => {
   });
 }}
 >
-  Next
+  Next: Choose Photos
 </button>
 
         </div>

@@ -108,3 +108,30 @@
   .cis-cropWrap{ height: 40vh; }
   .cis-next{ width: 100%; }
 }
+@media (max-width: 640px){
+  /* keep crop area size */
+  .cis-cropWrap{ height: 40vh; }
+
+  /* ✅ remove yellow bar */
+  .cis-sticky{
+    background: transparent;
+    border-top: none;          /* optional */
+  }
+
+  /* ✅ remove side padding so button is edge-to-edge */
+  .cis-stickyInner{
+    padding: 0;
+    margin: 0;
+    max-width: none;
+    justify-content: stretch;
+  }
+
+  /* ✅ button fills sticky height/width */
+  .cis-next{
+    width: 100%;
+    height: 100%;
+    padding: 16px;
+    display: block;
+    border-radius: 0;
+  }
+}
