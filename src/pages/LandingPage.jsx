@@ -3,7 +3,7 @@ import SiteHeader from "../components/SiteHeader";
 import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
 import "../styles/landing.css";
-
+import FrameStylesGallery from "../components/FrameStylesGallery";
 function useFadeUp() {
   const reduce = useReducedMotion();
   return useMemo(() => {
@@ -285,7 +285,7 @@ export default function LandingPage({ onStartFraming }) {
         </div>
 
         <div className="fx-divider fx-container" />
-        <DraggableGallery />
+        <FrameStylesGallery />
       </section>
 
       {/* PRICING */}
