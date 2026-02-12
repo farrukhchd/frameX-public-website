@@ -112,6 +112,8 @@ export default function FrameGridPicker({
           ))}
         </div>
       ) : (
+        <div className="fx-frameGridScroll" role="region" aria-label="Frames list">
+
         <div className="fx-frameGrid">
           {filtered.map((frame) => {
             const active = selectedFrame?.id === frame.id;
@@ -151,6 +153,7 @@ export default function FrameGridPicker({
               <div className="fx-emptySub">Try another color.</div>
             </div>
           ) : null}
+        </div>
         </div>
       )}
     </section>

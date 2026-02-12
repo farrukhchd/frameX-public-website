@@ -4,11 +4,23 @@
   --border:#eaeaea;
   --bg:#f5f5f5;
 
-  /* ✅ Mat defaults (can be overridden from PreviewStage via inline CSS vars) */
+  /* Mat defaults (can be overridden from PreviewStage via inline CSS vars) */
   --mat-color: #fbfbfb;
+
+  /* FrameX (picker) tokens */
+  --fx-bg: #ffffff;
+  --fx-text: #0b0b0b;
+  --fx-muted: rgba(0,0,0,.62);
+  --fx-hairline: rgba(0,0,0,.08);
+  --fx-border: rgba(0,0,0,.12);
+  --fx-shadow: 0 14px 35px rgba(0,0,0,.10);
+  --fx-radius: 16px;
+  --fx-radius-lg: 18px;
 }
 
-/* Page */
+/* ---------------------------
+Page
+--------------------------- */
 .fp3-page{
   min-height:100vh;
   background: var(--bg);
@@ -30,6 +42,11 @@
 
 .fp3-left, .fp3-right{ min-width:0; }
 
+.fp3-panelModern{
+  display:grid;
+  gap: 12px;
+}
+
 /* ---------------------------
 Left - Preview Card
 --------------------------- */
@@ -39,7 +56,6 @@ Left - Preview Card
   padding: 14px;
 }
 
-/* Large viewport */
 .fp3-viewportModern{
   height: clamp(520px, 72vh, 760px);
   border: 1px solid rgba(0,0,0,.08);
@@ -50,15 +66,6 @@ Left - Preview Card
   align-items:center;
   justify-content:center;
 }
-
-/* =========================================================
-   ✅ FRAME PREVIEW (single source of truth)
-   Matches PreviewStage.jsx:
-   .fp3-frame9Modern -> container
-   .fp3-frame9Opening -> clipped opening (padding applied here)
-   .fp3-mountModern.hasMat -> mat background only when selected
-   frame border drawn ONCE via ::after (always on top)
-========================================================= */
 
 /* Frame container */
 .fp3-frame9Modern{
@@ -73,7 +80,7 @@ Left - Preview Card
   box-sizing: border-box;
 }
 
-/* Opening inside the frame (everything clipped here) */
+/* Opening inside the frame */
 .fp3-frame9Opening{
   position: absolute;
   inset: 0;
@@ -81,12 +88,33 @@ Left - Preview Card
   padding: var(--pad);
   box-sizing: border-box;
 
-  overflow: hidden;          /* ✅ prevents mat/photo spilling out */
-  z-index: 1;                /* ✅ behind border overlay */
+  overflow: hidden;
+  z-index: 1;
   background: transparent;
 }
 
-/* ✅ Glass reflection (above photo/mat, below frame border) */
+/* Mat color belongs to OPENING (padding lives here) */
+.fp3-frame9Opening.hasMat{
+  background: var(--mat-color, #fbfbfb);
+}
+
+/* Inner bevel shadow on mat (opening) */
+.fp3-frame9Opening.hasMat::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:2;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.65),
+    inset 0 -12px 24px rgba(0,0,0,.10),
+    inset 12px 0 20px rgba(0,0,0,.06),
+    inset -12px 0 20px rgba(0,0,0,.06);
+  border: 1px solid rgba(0,0,0,.06);
+}
+
+/* Glass reflection (above photo/mat, below frame border) */
 .fp3-frame9Opening::after{
   content:"";
   position:absolute;
@@ -106,71 +134,27 @@ Left - Preview Card
   opacity: .55;
 }
 
-/* Mat area */
+/* Mount stays transparent (mat handled by opening) */
 .fp3-mountModern{
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-
   display: block;
-  background: transparent;   /* ✅ no mat = no white area */
+  background: transparent;
   position: relative;
-}
-
-/* Opening inside the frame (everything clipped here) */
-.fp3-frame9Opening{
-  position: absolute;
-  inset: 0;
-  padding: var(--pad);
-  box-sizing: border-box;
-  overflow: hidden;
   z-index: 1;
-  background: transparent;
 }
-
-/* ✅ Mat color belongs to OPENING because padding lives here */
-.fp3-frame9Opening.hasMat{
-  background: var(--mat-color, #fbfbfb);
-}
-
-/* ✅ Inner bevel shadow on the mat area (opening) */
-.fp3-frame9Opening.hasMat::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  z-index:2;
-
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.65),
-    inset 0 -12px 24px rgba(0,0,0,.10),
-    inset 12px 0 20px rgba(0,0,0,.06),
-    inset -12px 0 20px rgba(0,0,0,.06);
-  border: 1px solid rgba(0,0,0,.06);
-}
-
-/* Keep mount transparent (mat is now on opening) */
-.fp3-mountModern{
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  display: block;
-  background: transparent;
-  position: relative;
-  z-index: 1; /* photo stays below bevel overlay */
-}
-
 
 /* Photo: must never crop */
 .fp3-photoModern{
   width: 100% !important;
   height: 100% !important;
-
   display: block;
+
   object-fit: contain !important;
   object-position: center center !important;
 
-  background: transparent;   /* ✅ no white area */
+  background: transparent;
 }
 
 /* Draw frame border ONCE, ALWAYS on top */
@@ -194,7 +178,7 @@ Left - Preview Card
   height: 100%;
 }
 
-/* Placeholder model info (no model / AR hint) */
+/* Placeholder model info */
 .fp3-modelBox{
   width: min(760px, 92%);
   height: 70%;
@@ -302,66 +286,41 @@ Left - Preview Card
 }
 
 /* ---------------------------
-Right - Panels
+Right - Generic cards used on this screen
 --------------------------- */
-.fp3-panelModern{
-  display:grid;
-  gap: 12px;
-}
-
-.fp3-topCard{
-  background:#fff;
-  border: 1px solid var(--border);
-  padding: 14px;
-}
-
-.fp3-kickerModern{
-  font-size:12px;
-  font-weight: 800;
-  letter-spacing: .08em;
-  opacity: .6;
-}
-
-.fp3-titleModern{
-  margin-top: 6px;
-  font-size: 22px;
-  font-weight: 950;
-}
-
-.fp3-sublineModern{
-  margin-top: 6px;
-  font-size: 13px;
-  opacity: .65;
-}
-
-.fp3-dot{
-  margin: 0 6px;
-  opacity: .5;
-}
-
-.fp3-actionsRow{
-  margin-top: 10px;
-  display:flex;
-  gap:10px;
-  justify-content:flex-start;
-}
-
-.fp3-ghostMini{
-  border: 1px solid rgba(0,0,0,.22);
-  background:#fff;
-  font-weight: 950;
-  padding: 10px 12px;
-  cursor:pointer;
-}
-
-.fp3-ghostMini:hover{ background:#fafafa; }
-
+.fp3-topCard,
 .fp3-card{
   background:#fff;
   border: 1px solid var(--border);
   padding: 14px;
 }
 
+/* FrameInfoCard thumb */
+.fp3-infoTopRow{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:6px;
+}
+
+.fp3-selectedFrameThumb{
+  width:56px;
+  height:56px;
+  border:1px solid rgba(0,0,0,.12);
+  background:#fff;
+  overflow:hidden;
+  flex:0 0 auto;
+}
+
+.fp3-selectedFrameThumb img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+/* Mat/Chip style helpers (used by MatWidthSelector / MatColorSelector if they use fp3 classes) */
 .fp3-secTitleModern{
   font-size: 12px;
   font-weight: 800;
@@ -405,6 +364,7 @@ Right - Panels
   line-height: 1.6;
 }
 
+/* Price card / CTA (if PriceCard uses these fp3 classes) */
 .fp3-priceCard{
   border-color:#ddd;
 }
@@ -463,31 +423,6 @@ Right - Panels
   opacity: .7;
 }
 
-/* FrameInfoCard: thumb in header */
-.fp3-infoTopRow{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:12px;
-  margin-top:6px;
-}
-
-.fp3-selectedFrameThumb{
-  width:56px;
-  height:56px;
-  border:1px solid rgba(0,0,0,.12);
-  background:#fff;
-  overflow:hidden;
-  flex:0 0 auto;
-}
-
-.fp3-selectedFrameThumb img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-}
-
 /* ---------------------------
 Responsive
 --------------------------- */
@@ -521,138 +456,226 @@ Responsive
     width: 78px;
     height: 62px;
   }
-
-  .fp3-frameGridMini{
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
 }
 
-/* ---- FrameGridPicker (in preview) ---- */
-.fgp-wrap{
-  margin-top: 14px;
-  border-top: 1px solid rgba(0,0,0,.08);
-  padding-top: 14px;
+/* ======================================================================
+   ✅ FrameGridPicker (fx-*) — CLEAN + USED ONLY
+====================================================================== */
+
+/* Section card */
+.fx-card{
+  background: var(--fx-bg);
+  border: 1px solid var(--fx-hairline);
+  border-radius: var(--fx-radius);
+  padding: 16px;
 }
 
-.fgp-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:12px;
-  margin-bottom:10px;
-}
-
-.fgp-title{
-  font-weight: 900;
+.fx-sectionHead{ margin-bottom: 12px; }
+.fx-sectionTitle{
   font-size: 14px;
-  color: #0b0a09;
+  font-weight: 650;
+  letter-spacing: -0.15px;
+  color: var(--fx-text);
 }
-
-.fgp-sub{
+.fx-sectionSub{
   margin-top: 4px;
-  font-size: 12px;
-  color: rgba(11,10,9,.65);
-  line-height: 1.4;
+  font-size: 12.5px;
+  color: var(--fx-muted);
 }
 
-.fgp-controls{
-  display:flex;
-  gap:10px;
-  align-items:center;
-  margin: 10px 0 12px;
-}
-
-.fgp-search{
-  flex: 1;
-  border: 1px solid rgba(0,0,0,.14);
-  border-radius: 10px;
-  padding: 10px 12px;
-  outline: none;
-  font-size: 13px;
-  background: #fff;
-}
-
-.fgp-select{
-  width: 140px;
-  border: 1px solid rgba(0,0,0,.14);
-  border-radius: 10px;
-  padding: 10px 12px;
-  outline: none;
-  font-size: 13px;
-  background: #fff;
-}
-
-.fgp-loading, .fgp-empty{
-  padding: 10px 0;
-  color: rgba(11,10,9,.7);
-  font-size: 13px;
-}
-
-.fgp-grid{
-  display:grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+/* Color row */
+.fx-colorRow{
+  display: flex;
+  align-items: center;
   gap: 10px;
+  padding: 6px 2px 12px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.fx-colorRow::-webkit-scrollbar{ height: 6px; }
+.fx-colorRow::-webkit-scrollbar-thumb{
+  background: rgba(0,0,0,.12);
+  border-radius: 999px;
 }
 
-@media (max-width: 980px){
-  .fgp-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-
-.fgp-card{
-  border: 1px solid rgba(0,0,0,.10);
+/* "All" */
+.fx-colorAll{
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,.14);
   background: #fff;
+  font-size: 12.5px;
+  font-weight: 650;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform .15s ease, border-color .15s ease;
+}
+.fx-colorAll:hover{ transform: translateY(-1px); }
+.fx-colorAll.is-active{
+  background: #0b0b0b;
+  color: #fff;
+  border-color: #0b0b0b;
+}
+
+/* Dot */
+.fx-colorDot{
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,.14);
+  background: #fff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  flex: 0 0 auto;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.fx-colorDot:hover{ transform: translateY(-1px); }
+
+.fx-colorDotFill{
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+}
+
+.fx-colorDot.is-active{
+  border-color: rgba(0,0,0,.55);
+  box-shadow: 0 10px 22px rgba(0,0,0,.10);
+}
+.fx-colorDot.is-active .fx-colorDotFill{
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.15),
+    0 0 0 3px rgba(0,0,0,.10);
+}
+
+/* ✅ 3 rows visible + scroll for remaining frames */
+.fx-frameGridScroll{
+  --gap: 12px;
+  --rows: 2;      /* ✅ only 2 rows visible */
+  --rowH: 158px;  /* adjust if needed */
+  max-height: calc((var(--rowH) * var(--rows)) + (var(--gap) * (var(--rows) - 1)));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 6px;
+}
+
+.fx-frameGrid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gap);
+}
+
+@media (max-width: 520px){
+  .fx-frameGrid{ grid-template-columns: 1fr; }
+  .fx-frameGridScroll{ --rowH: 170px; }
+  
+}
+
+/* Frame cards */
+.fx-frameCard{
+  text-align: center;
+  background: #fff;
+  border: 1px solid var(--fx-hairline);
+  border-radius: var(--fx-radius-lg);
+  padding: 12px 10px 14px;
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.fx-frameCard:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0,0,0,.10);
+  border-color: rgba(0,0,0,.14);
+}
+.fx-frameCard.is-active{
+  border-color: rgba(0,0,0,.55);
+  box-shadow: var(--fx-shadow);
+}
+
+.fx-frameMedia{
+  width: min(100px, 100%);
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
   border-radius: 14px;
-  padding: 10px;
-  cursor:pointer;
-  text-align:left;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,.08);
+  background: #fff;
 }
-
-.fgp-card:hover{
-  border-color: rgba(0,0,0,.22);
-}
-
-.fgp-card.is-active{
-  border-color: #0b0a09;
-  box-shadow: 0 0 0 2px rgba(11,10,9,.08);
-}
-
-.fgp-thumb{
-  width: 100%;
-  aspect-ratio: 1/1;
-  border-radius: 12px;
-  overflow:hidden;
-  background: #f6f6f6;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.fgp-thumb img{
+.fx-frameMedia img{
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display:block;
+  display: block;
 }
 
-.fgp-meta{
+.fx-frameCodeOnly{
   margin-top: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,.75);
 }
 
-.fgp-name{
-  font-size: 12.5px;
-  font-weight: 900;
-  color: #0b0a09;
-  line-height: 1.2;
+/* Empty state */
+.fx-empty{
+  grid-column: 1 / -1;
+  padding: 18px;
+  border: 1px dashed var(--fx-border);
+  border-radius: var(--fx-radius);
+  text-align: center;
+  color: var(--fx-muted);
+}
+.fx-emptyTitle{ font-weight: 650; color: var(--fx-text); }
+.fx-emptySub{ margin-top: 4px; font-size: 12.5px; }
+
+/* Skeleton */
+.fx-skeletonGrid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (max-width: 520px){
+  .fx-skeletonGrid{ grid-template-columns: 1fr; }
+}
+.fx-skelCard{
+  height: 220px;
+  border-radius: var(--fx-radius-lg);
+  border: 1px solid var(--fx-hairline);
+  background: linear-gradient(90deg, #f3f3f3, #fafafa, #f3f3f3);
+  background-size: 200% 100%;
+  animation: fx-shimmer 1.25s infinite;
+}
+@keyframes fx-shimmer{
+  0%{ background-position: 0% 0; }
+  100%{ background-position: -200% 0; }
 }
 
-.fgp-mini{
-  margin-top: 4px;
-  font-size: 11.5px;
-  color: rgba(11,10,9,.65);
-  display:flex;
-  gap:6px;
-  align-items:center;
-  flex-wrap:wrap;
+/* ========= FORCE 2 visible rows + scroll ========= */
+.fx-frameGridScroll{
+  max-height: 328px !important; /* 2 rows in 2-column grid */
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding-right: 6px;
 }
 
-.fgp-dot{ opacity: .6; }
+/* Ensure the grid is 2 columns (desktop) */
+.fx-frameGrid{
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+
+/* Mobile (1 column): 2 rows are taller */
+@media (max-width: 520px){
+  .fx-frameGrid{
+    grid-template-columns: 1fr !important;
+  }
+  .fx-frameGridScroll{
+    max-height: 360px !important; /* 2 rows in 1-column layout */
+  }
+}
