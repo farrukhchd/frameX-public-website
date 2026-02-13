@@ -132,6 +132,17 @@ export function useMaterialsPricing({ baseArtSizeText, printPrice = 0, printCost
 
     const pSell = Number(printPrice || 0);
     const pCost = Number(printCost || 0);
+console.log("🧾 PRICING DEBUG", {
+  finalFrameSize,
+  baseSell,
+  baseCost,
+  printPrice: pSell,
+  printCost: pCost,
+  combinedSelling: baseSell + pSell,
+  combinedCost: baseCost + pCost,
+  selectedVariants,
+  selectedFrame,
+});
 
     return {
       selling: pricing?.selling == null ? null : baseSell + pSell,

@@ -577,47 +577,52 @@ Responsive
 
 /* Frame cards */
 .fx-frameCard{
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
   text-align: center;
-  background: #fff;
-  border: 1px solid var(--fx-hairline);
-  border-radius: var(--fx-radius-lg);
-  padding: 12px 10px 14px;
-  cursor: pointer;
-  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  padding-top: 10px !important;
+
 }
+
 .fx-frameCard:hover{
-  transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(0,0,0,.10);
-  border-color: rgba(0,0,0,.14);
+  transform: none !important;
+  box-shadow: none !important;
 }
+/* Active = subtle ring only */
 .fx-frameCard.is-active{
-  border-color: rgba(0,0,0,.55);
-  box-shadow: var(--fx-shadow);
+  border: 0 !important;
+  box-shadow: none !important;
 }
 
 .fx-frameMedia{
-  width: min(100px, 100%);
+  width: 64px !important;          /* ⬅️ reduce size (try 56/64/72) */
   aspect-ratio: 1 / 1;
   margin: 0 auto;
-  border-radius: 14px;
+  border-radius: 12px !important;
   overflow: hidden;
-  border: 1px solid rgba(0,0,0,.08);
-  background: #fff;
+  border: 0 !important;            /* ⬅️ removes inner square border */
+  background: transparent !important; /* ⬅️ removes inner square fill */
 }
+/* image stays clean */
 .fx-frameMedia img{
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
-
+/* Active state: subtle ring ONLY around the thumb */
+.fx-frameCard.is-active .fx-frameMedia{
+  box-shadow: 0 0 0 2px rgba(0,0,0,.55) !important;
+}
+/* Code: tighten spacing */
 .fx-frameCodeOnly{
-  margin-top: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: rgba(0,0,0,.75);
+  margin-top: 6px !important;
+  font-size: 11px !important;
+  font-weight: 700;
+  letter-spacing: .04em;
 }
 
 /* Empty state */
@@ -656,7 +661,7 @@ Responsive
 
 /* ========= FORCE 2 visible rows + scroll ========= */
 .fx-frameGridScroll{
-  max-height: 328px !important; /* 2 rows in 2-column grid */
+  max-height: 210px !important; /* 2 rows in 2-column grid */
   overflow-y: auto !important;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
@@ -667,13 +672,14 @@ Responsive
 .fx-frameGrid{
   display: grid !important;
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  gap: 12px !important;
+  gap: 8px !important;      /* was 12px */
 }
 
 /* Mobile (1 column): 2 rows are taller */
 @media (max-width: 520px){
   .fx-frameGrid{
     grid-template-columns: 1fr !important;
+     gap: 10px !important;
   }
   .fx-frameGridScroll{
     max-height: 360px !important; /* 2 rows in 1-column layout */

@@ -66,7 +66,23 @@ import FrameGridPicker from "../components/FrameGridPicker";
      printCost,
      selectedFrame,
    });
-
+useEffect(() => {
+  console.log("🧾 pricingState.selectedVariants:", pricingState.selectedVariants);
+  console.log("🧾 pricingState.materials:", pricingState.materials);
+  console.log("🧾 pricingState.pricing:", pricingState.pricing);
+  console.log("🧾 pricingState.combined:", pricingState.combined);
+  console.log("🧾 finalFrameSize:", pricingState.finalFrameSize);
+  console.log("🧾 matInches:", pricingState.matInches);
+  console.log("🧾 mountPaddingPx:", pricingState.mountPaddingPx);
+}, [
+  pricingState.selectedVariants,
+  pricingState.materials,
+  pricingState.pricing,
+  pricingState.combined,
+  pricingState.finalFrameSize,
+  pricingState.matInches,
+  pricingState.mountPaddingPx,
+]);
    // Add to cart
    const cart = useAddToCart({
      payload,
