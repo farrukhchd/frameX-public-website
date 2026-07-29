@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchMouldings } from "../services/apiService";
+import { filterAvailableFrames } from "../utils/frameUtils";
 
 export function useFrames({ enabled }) {
   const [frames, setFrames] = useState([]);
@@ -15,7 +16,7 @@ export function useFrames({ enabled }) {
       try {
         const list = await fetchMouldings();
         if (!mounted) return;
-        setFrames(Array.isArray(list) ? list : []);
+        setFrames(Array.isArray(list) ? filterAvailableFrames(list) : []);
       } catch (e) {
         console.error("Frames fetch failed:", e);
       } finally {

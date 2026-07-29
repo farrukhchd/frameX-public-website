@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { fetchMouldings } from "../services/apiService";
+import { filterAvailableFrames } from "../utils/frameUtils";
 
 // Landing gallery that uses SAME API as FrameSelection
 export default function FrameStylesGallery() {
@@ -29,8 +30,10 @@ export default function FrameStylesGallery() {
     };
   }, []);
 
-  // keep landing neat: show first 10–14 (adjust as you like)
-  const visibleFrames = useMemo(() => frames.slice(0, 12), [frames]);
+  const visibleFrames = useMemo(
+    () => filterAvailableFrames(frames).slice(0, 12),
+    [frames]
+  );
 
   const onPointerDown = (e) => {
     const el = scrollerRef.current;

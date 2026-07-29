@@ -13,6 +13,7 @@ export default function QuantityStep() {
   const navigate = useNavigate();
   const { service } = useParams();
   const location = useLocation();
+const isEmptyFrame = service === "empty-frame";
 
   // Data passed from SizeSelection
   const payload = location.state;
@@ -123,17 +124,22 @@ export default function QuantityStep() {
 <button
   className="qt-next"
   type="button"
-onClick={() => {
-  navigate(`/start-framing/photos/${service}`, {
-    state: {
-      ...payload,
-      quantity: qty,
-      subtotal, // keep for later
-    },
-  });
-}}
+  onClick={() => {
+    navigate(
+      isEmptyFrame
+        ? `/start-framing/frames/${service}`
+        : `/start-framing/photos/${service}`,
+      {
+        state: {
+          ...payload,
+          quantity: qty,
+          subtotal,
+        },
+      }
+    );
+  }}
 >
-  Next: Choose Photos
+  Next: {isEmptyFrame ? "Choose Frame" : "Choose Photos"}
 </button>
 
         </div>

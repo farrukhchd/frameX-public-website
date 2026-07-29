@@ -193,11 +193,7 @@ function SizeSelection() {
             type="button"
             disabled={loadingSizes || !selected}
             onClick={() => {
-              // Empty frame goes to frame-style later; photo-frame/prints go to quantity
-              if (isEmptyFrame) {
-                alert("Next: Choose Frame Style (to be built)");
-                return;
-              }
+
 
               navigate(`/start-framing/quantity/${service}`, {
                 state: {

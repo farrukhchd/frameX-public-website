@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import SiteHeader from "../components/SiteHeader";
 import { fetchMouldings } from "../services/apiService";
+import { filterAvailableFrames } from "../utils/frameUtils";
 import "../styles/frame-selection.css";
 import "../styles/quantity.css"; // reuse qt-meta strip styles
 import "../styles/meta-strip.css";
@@ -77,11 +78,13 @@ export default function FrameSelection() {
     };
   }, []);
 
+  const visibleFrames = useMemo(() => filterAvailableFrames(frames), [frames]);
+
   const filteredFrames = useMemo(() => {
-    if (!selectedColor) return frames;
+    if (!selectedColor) return visibleFrames;
     const target = selectedColor.toLowerCase();
-    return frames.filter((f) => (f.color ?? "").toLowerCase() === target);
-  }, [frames, selectedColor]);
+    return visibleFrames.filter((f) => (f.color ?? "").toLowerCase() === target);
+  }, [visibleFrames, selectedColor]);
 
   const onSelectFrame = (frame) => {
     navigate(`/start-framing/frame-preview/${service}`, {

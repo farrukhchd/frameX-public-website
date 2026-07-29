@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { fetchMouldings } from "../services/apiService";
+import { filterAvailableFrames } from "../utils/frameUtils";
 
 function resolveMediaUrl(url) {
   if (!url) return null;
@@ -45,14 +46,16 @@ export default function FrameGridPicker({
     };
   }, []);
 
+  const visibleFrames = useMemo(() => filterAvailableFrames(frames), [frames]);
+
   const filtered = useMemo(() => {
     const color = (selectedColor || "All").toLowerCase();
 
-    return frames.filter((f) => {
+    return visibleFrames.filter((f) => {
       if (color === "all") return true;
       return (f.color || "").toLowerCase() === color;
     });
-  }, [frames, selectedColor]);
+  }, [visibleFrames, selectedColor]);
 
   return (
     <section className="fx-card fx-section">
