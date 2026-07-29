@@ -7,6 +7,7 @@ import PhotoSelection from "./pages/PhotoSelection";
 import CropImages from "./pages/CropImages";
 import FrameSelection from "./pages/FrameSelection";
 import FramePreview from "./pages/FramePreview";
+import HowItWorks from "./pages/HowItWorks";
 import CartBottomSheet from "./components/CartBottomSheet";
 import Checkout from "./pages/Checkout";
 export default function App() {
@@ -15,6 +16,7 @@ export default function App() {
       <CartBottomSheet />
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/how-it-works" element={<HowItWorks />} />
         <Route path="/start-framing" element={<StartFramingStep1 />} />
         <Route path="/start-framing/size/:service" element={<SizeSelection />} />
         <Route path="/start-framing/quantity/:service" element={<QuantityStep />} />

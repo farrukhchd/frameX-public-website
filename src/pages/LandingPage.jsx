@@ -311,7 +311,7 @@ export default function LandingPage({ onStartFraming }) {
         <div className="fx-container fx-footerInner">
           <span>© {new Date().getFullYear()} FrameX</span>
           <div className="fx-footerLinks">
-            <a href="#process">How it works</a>
+            <Link to="/how-it-works">How it works</Link>
             <a href="#gallery">Styles</a>
             <a href="#pricing">Pricing</a>
           </div>
